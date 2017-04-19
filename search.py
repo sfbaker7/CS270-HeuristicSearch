@@ -80,9 +80,7 @@ def breadth_first_search(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
-    #*** YOUR CODE HERE ***
-    #This takes a really long time due to revisited states.  How can
-    #you detect them?
+
     root = SearchNode(problem.get_start_state())
     q = [root]
     visted_states = set([])
@@ -110,7 +108,6 @@ def breadth_first_search(problem):
     return []
 
 def greedy_search(problem):
-    "*** YOUR CODE HERE ***"
     start = problem.get_start_state()
     raise NotImplementedError()
 
@@ -126,7 +123,6 @@ class MazeProblem(SearchProblem):
         Stores the maze grid.
         """
         self.grid = grid
-        #*** YOUR CODE HERE (optional) ***
 
     def get_start_state(self):
         "Returns the start state"
@@ -139,7 +135,7 @@ class MazeProblem(SearchProblem):
 
     def is_goal_state(self, state):
         "Returns whether this search state is a goal state of the problem"
-        #*** YOUR CODE HERE ***
+
         return self.grid[state[0]][state[1]] == 'R'
 
     def get_successors(self, state):
@@ -160,7 +156,7 @@ class MazeProblem(SearchProblem):
         	x = nstate[0]
         	y = nstate[0]
 
-            #*** YOUR CODE HERE ***
+
             if((nblock_type != "a") && ( x=<len(self.grid) && y=<len(self.grid[0]) )&&(x>=0&&y>=0)){
 
             	successors.append(nstate)
@@ -172,7 +168,7 @@ class MazeProblem(SearchProblem):
 
     def eval_heuristic(self,state):
         '''This is the heuristic that will be used for greedy search'''
-        #*** YOUR CODE HERE ***
+
         raise NotImplementedError()
 
 def pretty_print_grid(grid):

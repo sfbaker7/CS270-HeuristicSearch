@@ -1,4 +1,3 @@
-# Note: You do not need to change anything in this file
 
 import MalmoPython
 import os
@@ -13,11 +12,11 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)  # flush print output immedi
 def GetMissionXML( seed, gp ):
     return '''<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
             <Mission xmlns="http://ProjectMalmo.microsoft.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            
+
               <About>
                 <Summary>Hello world!</Summary>
               </About>
-              
+
             <ServerSection>
               <ServerInitialConditions>
                 <Time>
@@ -46,7 +45,7 @@ def GetMissionXML( seed, gp ):
                   <ServerQuitWhenAnyAgentFinishes/>
                 </ServerHandlers>
               </ServerSection>
-              
+
               <AgentSection mode="Survival">
                 <Name>HW1Bot</Name>
                 <AgentStart>
@@ -60,7 +59,7 @@ def GetMissionXML( seed, gp ):
                     <AgentQuitFromTouchingBlockType>
                         <Block type="redstone_block"/>
                     </AgentQuitFromTouchingBlockType>
-                    
+
                     <ObservationFromGrid>
                         <Grid name="front20x10">
                             <min x="-10" y="-1" z="0"/>
@@ -80,7 +79,7 @@ except RuntimeError as e:
     print 'ERROR:',e
     print agent_host.getUsage()
     exit(1)
-    
+
 if agent_host.receivedArgument("help"):
     print agent_host.getUsage()
     exit(0)
@@ -129,18 +128,18 @@ while world_state.is_mission_running:
     sys.stdout.write(".")
     time.sleep(0.1)
     world_state = agent_host.getWorldState()
-    
+
     if world_state.number_of_observations_since_last_state > 0:
         msg = world_state.observations[-1].text
         ob = json.loads(msg)
-    
+
         # get the data in front of the agent ONCE
         all_tiles = ob.get(u'front20x10',0)
         grid = []
         for i in range(10):
-            row = (all_tiles[i*21:((i+1)*21)])[::-1] 
+            row = (all_tiles[i*21:((i+1)*21)])[::-1]
             grid.append(row)
-        
+
         for i in range(len(grid)):
             for j in range(len(grid[i])):
                 if grid[i][j] == u'air':
@@ -153,9 +152,9 @@ while world_state.is_mission_running:
                     grid[i][j] = 'R'
                 else:
                     grid[i][j] = '?'
-        
+
         pretty_print_grid(grid)
-        
+
         problem = MazeProblem(grid)
         if search_alg == 'bfs':
             plan = breadth_first_search(problem)
@@ -167,7 +166,7 @@ while world_state.is_mission_running:
                 command = commands[action]
                 agent_host.sendCommand(command)
                 time.sleep(0.5)
-        
+
         world_state = agent_host.getWorldState()
         if world_state.is_mission_running or len(world_state.rewards) == 0 or world_state.rewards[-1].getValue() < 100.0:
             print 'Mission failed: did not reach goal state.'
@@ -175,13 +174,10 @@ while world_state.is_mission_running:
         else:
             print 'Mission accomplished: goal state reached.'
             break
-        
+
     for error in world_state.errors:
         print "Error:",error.text
 
 print
 print "Mission ended"
 time.sleep(0.5)
-
-
-    

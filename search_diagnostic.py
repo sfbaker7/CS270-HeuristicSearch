@@ -61,20 +61,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('search_alg', nargs='?', type=str, choices=['gs', 'bfs'], default='bfs')
     args = parser.parse_args()
-    
+
     problem = MazeProblem(grid)
     if args.search_alg == 'bfs':
         plan = breadth_first_search(problem)
     elif args.search_alg == 'gs':
         plan = greedy_search(problem)
-    
+
     if plan:
         print "\nBeginning test script. '" + curr_marker + "' represents the agent's current grid location while '" + visited_marker + "' represents previously visited grid locations"
         print
         time.sleep(4)
         simulate_plan(plan, problem, grid)
-    
+
     print "\nTest script ended"
     time.sleep(1)
-    
-    
