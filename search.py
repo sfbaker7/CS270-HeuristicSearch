@@ -157,7 +157,7 @@ class MazeProblem(SearchProblem):
         	y = nstate[0]
 
 
-            if((nblock_type != "a") && ( x=<len(self.grid) && y=<len(self.grid[0]) )&&(x>=0&&y>=0)){
+            if((nblock_type != "a") and ( x=<len(self.grid) and y=<len(self.grid[0]) )and(x>=0 and y>=0)){
 
             	successors.append(nstate)
             	actions.append(a)
