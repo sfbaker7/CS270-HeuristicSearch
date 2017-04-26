@@ -6,6 +6,8 @@ definitions
 
 import weakref
 from sets import Set
+from heapq import heappush, heappop
+
 
 class SearchProblem:
     """
@@ -83,32 +85,60 @@ def breadth_first_search(problem):
 
     root = SearchNode(problem.get_start_state())
     q = [root]
+
     visted_states = set([])
-    print("outside loop")
 
     while len(q) > 0:
-    	n = q.pop(0)
-
-    	print("debug")
-
-    	if(n not in visted_states):
-	        visted_states.add(n)
-	        print "state",n.state,"depth",n.get_depth()
-	        succ, act = problem.get_successors(n.state)
-	        for (s,a) in zip(succ,act):
-	        	c = SearchNode(s,n,a)
-
-
-		        if problem.is_goal_state(s):
-		            return [n.paction for n in c.path_from_root() if n.parent != None]
-
-	            q.append(c)
+        n = q.pop(0)
+        if(n.state not in visted_states):
+            visted_states.add(n.state)
+            print "state",n.state,"depth",n.get_depth()
+            succ, act = problem.get_successors(n.state)
+            for (s,a) in zip(succ,act):
+                c = SearchNode(s,n,a)
+                visted_states.add(n.state)
+                if problem.is_goal_state(s):
+                    return [n.paction for n in c.path_from_root() if n.parent != None]
+                q.append(c)
 
     print "No path found!"
     return []
 
 def greedy_search(problem):
-    start = problem.get_start_state()
+    "*** YOUR CODE HERE ***"
+
+    start = SearchNode(problem.get_start_state())
+    sheuristic_val = problem.eval_heuristic(start.state)
+
+    snode = (sheuristic_val, start)
+    q = [snode]
+    ordered = []
+
+    visted_states = set([])
+
+
+
+    while len(q) > 0:
+        n = heappop(q)[1]
+
+        ordered.append(n.state)
+        if(n.state not in visted_states):
+            visted_states.add(n.state)
+            print "state",n.state,"depth",n.get_depth()
+            succ, act = problem.get_successors(n.state)
+            for (s,a) in zip(succ,act):
+                c = SearchNode(s,n,a)
+                visted_states.add(n.state)
+                if problem.is_goal_state(s):
+                    return [n.paction for n in c.path_from_root() if n.parent != None]
+                heuristic_val = problem.eval_heuristic(c.state)
+                node = (heuristic_val, c)
+                heappush(q, node)
+
+    print "No path found!"
+    return []
+
+
     raise NotImplementedError()
 
 
@@ -126,7 +156,6 @@ class MazeProblem(SearchProblem):
 
     def get_start_state(self):
         "Returns the start state"
-        #*** YOUR CODE HERE ***
         for i,row in enumerate(self.grid):
             for j,val in enumerate(row):
                 if val=='E':
@@ -135,7 +164,6 @@ class MazeProblem(SearchProblem):
 
     def is_goal_state(self, state):
         "Returns whether this search state is a goal state of the problem"
-
         return self.grid[state[0]][state[1]] == 'R'
 
     def get_successors(self, state):
@@ -151,23 +179,35 @@ class MazeProblem(SearchProblem):
         dirs = [(-1,0),(1,0),(0,-1),(0,1)]
         acts = ['n','s','e','w']
         for d,a in zip(dirs,acts):
-        	nstate = (state[0]+d[0],state[1]+d[1])
-        	nblock_type = self.grid[nstate[0]][nstate[1]]
-        	x = nstate[0]
-        	y = nstate[0]
+            nstate = (state[0]+d[0],state[1]+d[1])
+            x = nstate[0]
+            y = nstate[1]
 
 
-            if((nblock_type != "a") && ( x=<len(self.grid) && y=<len(self.grid[0]) )&&(x>=0&&y>=0)){
+            if(x<len(self.grid) and y<len(self.grid[0]) and x>=0 and y>=0):
+                nblock_type = self.grid[nstate[0]][nstate[1]]
 
-            	successors.append(nstate)
-            	actions.append(a)
-
-            }
-
+                if(nblock_type != "a"):
+                    successors.append(nstate)
+                    actions.append(a)
         return successors, actions
 
     def eval_heuristic(self,state):
         '''This is the heuristic that will be used for greedy search'''
+
+        for i,row in enumerate(self.grid):
+            for j,val in enumerate(row):
+                if val=='R':
+                    goal_state = (i,j)
+        x_goal = goal_state[0]
+        y_goal = goal_state[1]
+
+        x_state = state[0]
+        y_state = state[1]
+
+        dx = abs(x_state - x_goal)
+        dy = abs(y_state - y_goal)
+        return dx + dy
 
         raise NotImplementedError()
 
